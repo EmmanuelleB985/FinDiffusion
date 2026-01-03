@@ -1,0 +1,108 @@
+# FinDiffusion Default Configuration
+
+# Data settings
+data:
+  # List of tickers to train on (will download from Yahoo Finance)
+  tickers: ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA", "JPM", "V", "JNJ",
+            "WMT", "PG", "MA", "HD", "DIS", "PYPL", "ADBE", "NFLX", "INTC", "CSCO",
+            "PFE", "KO", "PEP", "MRK", "ABT", "TMO", "COST", "AVGO", "NKE", "MCD"]
+  start_date: "2010-01-01"
+  end_date: "2024-01-01"
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+  
+  # Preprocessing
+  seq_len: 252          # 1 trading year
+  stride: 21            # ~1 month stride for overlapping windows
+  normalize: true
+  
+# Model architecture
+model:
+  # Input/output dimensions
+  input_dim: 1          # Univariate returns (can extend to multivariate)
+  
+  # Transformer backbone
+  d_model: 256          # Model dimension
+  n_layers: 6           # Number of transformer layers
+  n_heads: 8            # Attention heads
+  d_ff: 1024            # Feed-forward dimension
+  dropout: 0.1
+  
+  # Condition encoder
+  condition_dim: 128    # Condition embedding dimension
+  n_regimes: 3          # Number of market regimes (bull/bear/sideways)
+  
+  # Diffusion settings
+  timesteps: 1000       # Number of diffusion steps
+  beta_start: 0.0001    # Noise schedule start
+  beta_end: 0.02        # Noise schedule end
+  beta_schedule: "linear"  # "linear", "cosine", "quadratic"
+  
+  # Prediction target
+  prediction_type: "epsilon"  # "epsilon" (predict noise) or "x0" (predict clean data)
+  
+# Training settings
+training:
+  epochs: 100
+  batch_size: 64        # Fits in 20GB with model size
+  gradient_accumulation: 1
+  
+  # Optimizer
+  optimizer: "adamw"
+  lr: 1.0e-4
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  
+  # Learning rate schedule
+  scheduler: "cosine"
+  warmup_epochs: 5
+  min_lr: 1.0e-6
+  
+  # Gradient clipping
+  clip_grad_norm: 1.0
+  
+  # Checkpointing
+  save_every: 10        # Save checkpoint every N epochs
+  save_best: true       # Save best model based on val loss
+  
+  # Mixed precision
+  use_amp: true         # Use automatic mixed precision
+  
+  # Reproducibility
+  seed: 42
+
+# Sampling settings
+sampling:
+  n_steps: 1000         # Can reduce for faster sampling (DDIM)
+  use_ddim: false       # Use DDIM for faster sampling
+  ddim_eta: 0.0         # DDIM stochasticity (0 = deterministic)
+  
+# Evaluation settings
+evaluation:
+  n_samples: 10000      # Number of samples for evaluation
+  batch_size: 256       # Larger batch for generation (no gradients)
+  
+  # Stylized facts tests
+  test_fat_tails: true
+  test_volatility_clustering: true
+  test_leverage_effect: true
+  test_autocorrelation: true
+  
+  # Significance level for statistical tests
+  alpha: 0.05
+
+# Logging
+logging:
+  use_wandb: true
+  project: "fin-diffusion"
+  log_every: 100        # Log metrics every N steps
+  sample_every: 10      # Generate samples every N epochs
+  n_sample_viz: 16      # Number of samples to visualize
+
+# Paths
+paths:
+  data_dir: "data"
+  checkpoint_dir: "checkpoints"
+  output_dir: "outputs"
+  log_dir: "logs"

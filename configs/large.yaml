@@ -1,0 +1,82 @@
+# FinDiffusion Large Configuration
+
+# Data settings
+data:
+  tickers: ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA", "JPM", "V", "JNJ",
+            "WMT", "PG", "MA", "HD", "DIS", "PYPL", "ADBE", "NFLX", "INTC", "CSCO",
+            "PFE", "KO", "PEP", "MRK", "ABT", "TMO", "COST", "AVGO", "NKE", "MCD",
+            "UNH", "LLY", "BAC", "XOM", "CVX", "ABBV", "CRM", "AMD", "ORCL", "ACN",
+            "DHR", "TXN", "BMY", "UPS", "RTX", "HON", "IBM", "QCOM", "SBUX", "GE"]
+  start_date: "2005-01-01"
+  end_date: "2024-01-01"
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+  seq_len: 504           # 2 trading years
+  stride: 21
+  normalize: true
+
+# Model architecture (larger)
+model:
+  input_dim: 1
+  d_model: 512           # Larger model
+  n_layers: 8            # More layers
+  n_heads: 16            # More attention heads
+  d_ff: 2048             # Larger FFN
+  dropout: 0.1
+  condition_dim: 256
+  n_regimes: 3
+  timesteps: 1000
+  beta_start: 0.0001
+  beta_end: 0.02
+  beta_schedule: "cosine"  # Cosine schedule often better
+  prediction_type: "epsilon"
+
+# Training settings
+training:
+  epochs: 200
+  batch_size: 32          # Reduced for larger model
+  gradient_accumulation: 2
+  optimizer: "adamw"
+  lr: 5.0e-5             # Lower LR for larger model
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  scheduler: "cosine"
+  warmup_epochs: 10
+  min_lr: 1.0e-7
+  clip_grad_norm: 1.0
+  save_every: 20
+  save_best: true
+  use_amp: true
+  seed: 42
+
+# Sampling settings
+sampling:
+  n_steps: 1000
+  use_ddim: true
+  ddim_eta: 0.0
+
+# Evaluation settings
+evaluation:
+  n_samples: 20000
+  batch_size: 128
+  test_fat_tails: true
+  test_volatility_clustering: true
+  test_leverage_effect: true
+  test_autocorrelation: true
+  alpha: 0.05
+
+# Logging
+logging:
+  use_wandb: true
+  project: "fin-diffusion-large"
+  log_every: 50
+  sample_every: 20
+  n_sample_viz: 32
+
+# Paths
+paths:
+  data_dir: "data"
+  checkpoint_dir: "checkpoints_large"
+  output_dir: "outputs"
+  log_dir: "logs"
