@@ -76,34 +76,34 @@ python scripts/evaluate.py --checkpoint checkpoints/best.ckpt
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    FinDiffusion Architecture                     │
+│                    FinDiffusion Architecture                    │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Input: x_t (noisy returns) + t (timestep) + c (conditions)    │
+│  Input: x_t (noisy returns) + t (timestep) + c (conditions)     │
 │                                                                 │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐        │
-│  │  Condition  │    │    Time     │    │   Input     │        │
-│  │  Encoder    │    │  Embedding  │    │  Projection │        │
-│  │  (MLP)      │    │  (Sinusoid) │    │  (Conv1D)   │        │
-│  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘        │
-│         │                  │                  │                │
-│         └────────┬─────────┴─────────┬────────┘                │
-│                  │                   │                         │
-│                  ▼                   ▼                         │
-│         ┌─────────────────────────────────────┐               │
-│         │      Transformer Encoder            │               │
-│         │  (Self-Attention + Cross-Attention) │               │
-│         │         × N layers                  │               │
-│         └─────────────────┬───────────────────┘               │
-│                           │                                    │
-│                           ▼                                    │
-│         ┌─────────────────────────────────────┐               │
-│         │       Output Projection             │               │
-│         │   (Predict noise ε or x_0)          │               │
-│         └─────────────────────────────────────┘               │
-│                                                                │
-│  Output: Predicted noise for denoising step                   │
-│                                                                │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐          │
+│  │  Condition  │    │    Time     │    │   Input     │          │
+│  │  Encoder    │    │  Embedding  │    │  Projection │          │
+│  │  (MLP)      │    │  (Sinusoid) │    │  (Conv1D)   │          │
+│  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘          │
+│         │                  │                  │                 │
+│         └────────┬─────────┴─────────┬────────┘                 │
+│                  │                   │                          │
+│                  ▼                   ▼                          │
+│         ┌─────────────────────────────────────┐                 │
+│         │      Transformer Encoder            │                 │
+│         │  (Self-Attention + Cross-Attention) │                 │
+│         │         × N layers                  │                 │
+│         └─────────────────┬───────────────────┘                 │
+│                           │                                     │
+│                           ▼                                     │
+│         ┌─────────────────────────────────────┐                 │
+│         │       Output Projection             │                 │
+│         │   (Predict noise ε or x_0)          │                 │
+│         └─────────────────────────────────────┘                 │
+│                                                                 │
+│  Output: Predicted noise for denoising step                     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
